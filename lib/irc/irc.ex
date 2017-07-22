@@ -30,9 +30,9 @@ defmodule Ircord.IrcBot do
   alias ExIrc.Client
   alias ExIrc.SenderInfo
 
-  def start_link(params) when is_map(params) do
+  def start_link(params, opts \\ []) when is_map(params) do
     config = Config.from_params(params)
-    GenServer.start_link(__MODULE__, [config], name: :ircord_irc)
+    GenServer.start_link(__MODULE__, [config], opts)
   end
 
 # GenServer callbacks

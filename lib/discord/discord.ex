@@ -14,7 +14,7 @@ defmodule Ircord.DiscordBot do
     spawn fn ->
       if payload.data["author"]["id"] != state[:client_id] do
         """
-        payload with mention, use this to decode mention id to name
+        TODO: payload with mention, use this to decode mention id to name
         %{data: %{"attachments" => [], "author" => %{"avatar" => "5dac354610b688fc5d7fe991b172f2b7", "discriminator" => "7512", "id" => 308968137678651393, "username" => "juba"}, "channel_id" => 321318083182460928, "content" => "<@321314936716525581>  wat", "edited_timestamp" => nil, "embeds" => [], "id" => 338301378277408770, "mention_everyone" => false, "mention_roles" => [], "mentions" => [%{"avatar" => nil, "bot" => true, "discriminator" => "5366", "id" => 321314936716525581, "username" => "kk-bot"}], "nonce" => "338301378130608128", "pinned" => false, "timestamp" => "2017-07-22T12:48:53.917000+00:00", "tts" => false, "type" => 0}, event_name: :MESSAGE_CREATE, op: :dispatch, seq_num: 11}
         """
         GenServer.call(:bridge, {:discord_message_received, _message_parser(payload)})

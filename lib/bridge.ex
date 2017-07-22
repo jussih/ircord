@@ -14,19 +14,6 @@ defmodule Ircord.Bridge do
     GenServer.start_link(__MODULE__, :ok, [name: name])
   end
 
-  @doc """
-  Send a message to discord
-  """
-  def send_to_discord(sender, msg, channel) do
-    # need to know the discord channel id, which is probably globally unique
-    # so guild id is not needed
-    {:ok}
-  end
-
-  def send_irc(bridge, msg) do
-    GenServer.call(bridge, {:send_irc, msg})
-  end
-
 
   ## Server Callbacks
   # the GenServer implementation in OTP calls these functions to modify
@@ -37,19 +24,8 @@ defmodule Ircord.Bridge do
   Init is called when GenServer.start_link() starts the server process
   """
   def init(:ok) do
-    # start the discord client process
-    discord_token = Application.get_env(:ircord, :discord_token)
-    {:ok, discord_bot} = DiscordEx.Client.start_link(%{
-	    token: discord_token,
-      handler: Ircord.DiscordBot,
-    })
-    {:ok, discord_rest_client} = DiscordEx.RestClient.start_link(%{token: discord_token})
 
-    irc_config = Application.get_env(:ircord, :irc_config)
-    {:ok, irc_bot} = Ircord.IrcBot.start_link(irc_config)
-    {:ok, %{discord_client: discord_bot, irc_client: irc_bot,
-      discord_channel: Application.get_env(:ircord, :discord_channel),
-      discord_rest_client: discord_rest_client}}
+    {:ok, %{discord_channel: Application.get_env(:ircord, :discord_channel)}}
   end
 
   @doc """
@@ -89,11 +65,12 @@ defmodule Ircord.Bridge do
   end
 
   defp send_irc_message(msg, state) do
-    GenServer.call(state.irc_client, {:send_message, msg})
+    GenServer.call(IrcBot, {:send_message, msg})
   end
 
   defp send_discord_message(msg, state) do
-    Channel.send_message(state.discord_rest_client, state.discord_channel, %{content: msg})
+    # DiscordRESTClient process name is registered in the discord supervisor
+    resp = Channel.send_message(DiscordRESTClient, state.discord_channel, %{content: msg})
   end
 
 end
