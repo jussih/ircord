@@ -10,8 +10,8 @@ defmodule Ircord.Bridge do
   @doc """
   Starts the bridge server.
   """
-  def start_link do
-    GenServer.start_link(__MODULE__, :ok, [name: :bridge])
+  def start_link(name) do
+    GenServer.start_link(__MODULE__, :ok, [name: name])
   end
 
   @doc """

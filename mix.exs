@@ -15,7 +15,11 @@ defmodule Ircord.Mixfile do
   # Type "mix help compile.app" for more information
   def application do
     # Specify extra applications you'll use from Erlang/Elixir
-    [extra_applications: [:logger], applications: [:discord_ex, :exirc]]
+    [
+      extra_applications: [:logger],
+      applications: [:discord_ex, :exirc],
+      mod: {Ircord, []}
+    ]
   end
 
   # Dependencies can be Hex packages:
