@@ -33,8 +33,7 @@ defmodule Ircord.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:discord_ex, git: "https://github.com/jussih/discord_ex.git", branch: "restclient-name"},
-      {:websocket_client, "~> 1.2.4", override: true},
+      {:discord_ex, git: "https://github.com/jussih/discord_ex.git", branch: "develop"},
       {:exirc, "~> 1.0.1"},
     ]
   end

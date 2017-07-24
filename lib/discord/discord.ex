@@ -6,9 +6,6 @@ defmodule Ircord.DiscordBot do
   """
   require Logger
 
-  alias DiscordEx.Client.Helpers.MessageHelper
-  alias DiscordEx.RestClient.Resources.Channel
-
   # Message Handler
   def handle_event({:message_create, payload}, state) do
     if payload.data["author"]["id"] != state[:client_id] do
