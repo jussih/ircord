@@ -15,9 +15,11 @@ defmodule Ircord.Mixfile do
   # Type "mix help compile.app" for more information
   def application do
     # Specify extra applications you'll use from Erlang/Elixir
+    # Distillery requires that all apps, even transitive dependencies, are
+    # included in applications, or they will be left out of the release
     [
       extra_applications: [:logger],
-      applications: [:discord_ex, :exirc],
+      applications: [:discord_ex, :exirc, :dns, :kcl, :poison, :poly1305, :socket, :temp, :websocket_client],
       mod: {Ircord, []}
     ]
   end
@@ -35,6 +37,7 @@ defmodule Ircord.Mixfile do
     [
       {:discord_ex, git: "https://github.com/jussih/discord_ex.git", branch: "develop"},
       {:exirc, "~> 1.0.1"},
+      {:distillery, "~> 1.0", runtime: false},
     ]
   end
 end

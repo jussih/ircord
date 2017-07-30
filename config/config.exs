@@ -27,10 +27,16 @@ config :ircord, irc_config: %{
   user: nil,
   name: nil,
   channel: nil,
+  channelpass: "",
 }
 
 config :ircord, discord_token: ""
 config :ircord, discord_channel: ""
+
+config :logger,
+  backends: [:console],
+  compile_time_purge_level: :debug,
+  level: :debug
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment
@@ -39,4 +45,4 @@ config :ircord, discord_channel: ""
 # here (which is why it is important to import them last).
 #
 #     import_config "#{Mix.env}.exs"
-import_config "local_config.exs"
+import_config "#{Mix.env}.exs"

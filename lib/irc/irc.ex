@@ -8,14 +8,15 @@ defmodule Ircord.IrcBot do
   require Logger
 
   defmodule Config do
-    defstruct server:  nil,
-              port:    nil,
-              pass:    nil,
-              nick:    nil,
-              user:    nil,
-              name:    nil,
-              channel: nil,
-              client:  nil
+    defstruct server:      nil,
+              port:        nil,
+              pass:        nil,
+              nick:        nil,
+              user:        nil,
+              name:        nil,
+              channel:     nil,
+              channelpass: "",
+              client:      nil
 
     def from_params(params) when is_map(params) do
       Enum.reduce(params, %Config{}, fn {k, v}, acc ->
@@ -66,7 +67,7 @@ defmodule Ircord.IrcBot do
   def handle_info(:logged_in, config) do
     Logger.debug("Logged in to #{config.server}:#{config.port}")
     Logger.debug("Joining #{config.channel}..")
-    Client.join(config.client, config.channel)
+    Client.join(config.client, config.channel, config.channelpass)
     {:noreply, config}
   end
 

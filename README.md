@@ -3,18 +3,40 @@
 Discord to IRC to Discord bridge. Echoes chat between a Discord channel and an
 IRC channel.
 
+## Requirements
+
+Tested with Elixir 1.4.5 and Erlang OTP 20.
+
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `ircord` to your list of dependencies in `mix.exs`:
+- Clone the repository
+- Run `mix deps.get`
+- Run `mix compile`
+- Create a configuration by copying `config/confix.exs` to
+  `config/dev.exs` and filling in the blanks.
+- Execute with iex `iex -S mix`
 
-```elixir
-def deps do
-  [{:ircord, "~> 0.1.0"}]
-end
-```
+## Deploying
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/ircord](https://hexdocs.pm/ircord).
+- Create a production configuration by copying `config/confix.exs` to
+  `config/prod.exs` and filling in the blanks.
+- Generate default release configuration `mix release.init`
+- Run `MIX_ENV=prod mix release --env=prod` to build a deployable tar archive
+  with included Erlang runtime
+- The release will be built to `_build/prod/rel/ircord/releases/VERSION`
+- Read more from the Distillery documentation: https://hexdocs.pm/distillery/
+
+
+# Centos
+
+There is a premade Dockerfile for building a release for Centos 7.3.1611
+
+- Build the Docker image `docker build -t centos-elixir:7.3.1611 .`
+- Run a shell in the image, mapping your code directory inside the container 
+  `docker run -it --rm -v $PWD:/usr/local/src/ircord centos-elixir:7.3.1611 /bin/bash`
+- Inside the container:
+  - `cd /usr/local/src/ircord`
+  - `mix release.init`
+  - `MIX_ENV=prod mix release --env=prod`
+- The release will be built to `_build/prod/rel/ircord/releases/VERSION`
 
