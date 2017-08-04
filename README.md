@@ -26,6 +26,12 @@ Tested with Elixir 1.4.5 and Erlang OTP 20.
 - The release will be built to `_build/prod/rel/ircord/releases/VERSION`
 - Read more from the Distillery documentation: https://hexdocs.pm/distillery/
 
+## Upgrading
+
+- Create an upgrade release `MIX_ENV=prod mix release --upgrade --upfrom=0.1.0 --env=prod`
+- Upload the resulting tarball from `_build/prod/rel/ircord/releases/VERSION/ircord.tar.gz` to the server, into `<deployment_root>/releases/VERSION/ircord.tar.gz`
+- Run `bin/ircord upgrade 0.2.0`
+- That's it (unless the upgrade requires something complicated like mutating genserver states)
 
 ### Centos
 
