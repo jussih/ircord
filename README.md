@@ -27,7 +27,7 @@ Tested with Elixir 1.4.5 and Erlang OTP 20.
 - Read more from the Distillery documentation: https://hexdocs.pm/distillery/
 
 
-# Centos
+### Centos
 
 There is a premade Dockerfile for building a release for Centos 7.3.1611
 

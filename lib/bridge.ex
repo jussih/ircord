@@ -34,13 +34,13 @@ defmodule Ircord.Bridge do
   when handling messages and pass that back to the server
   """
   def handle_call({:discord_message_received, message}, _from, state) do
-    Logger.info("Discord message received: #{message}")
+    Logger.debug("Discord message received: #{message}")
     send_irc_message(message, state)
     {:reply, :ok, state}
   end
 
   def handle_call({:irc_message_received, message}, _from, state) do
-    Logger.info("IRC message received: #{message}")
+    Logger.debug("IRC message received: #{message}")
     send_discord_message(message, state)
     {:reply, :ok, state}
   end

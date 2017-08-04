@@ -89,7 +89,7 @@ defmodule Ircord.IrcBot do
   end
 
   def handle_info({:received, msg, %SenderInfo{:nick => nick}, channel}, config) do
-    Logger.info("#{nick} from #{channel}: #{msg}")
+    Logger.debug("#{nick} from #{channel}: #{msg}")
     GenServer.call(:bridge, {:irc_message_received, "<#{nick}> #{msg}"})
     {:noreply, config}
   end
