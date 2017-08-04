@@ -16,7 +16,7 @@ defmodule Ircord.DiscordBot do
 
   # Fallback Handler
   def handle_event({event, _payload}, state) do
-    Logger.info("Received Event: #{event}")
+    Logger.debug("Received Event: #{event}")
     {:ok, state}
   end
 
