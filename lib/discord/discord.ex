@@ -9,39 +9,46 @@ defmodule Ircord.DiscordBot do
   # Message Handler
   def handle_event({:message_create, payload}, state) do
     if payload.data["author"]["id"] != state[:client_id] do
-      GenServer.call(:bridge, {:discord_message_received, _message_parser(payload)})
+      GenServer.call(:bridge, {:discord_message_received, parse_payload_as_string(payload)})
     end
     {:ok, state}
   end
 
   # Fallback Handler
   def handle_event({event, _payload}, state) do
-    Logger.info "Received Event: #{event}"
+    Logger.info("Received Event: #{event}")
     {:ok, state}
   end
 
-  defp _message_parser(payload) do
-    """
-    TODO: get some info from file attachments
-%{data: %{"attachments" => [%{"filename" => "cat.jpeg", "height" => 1163,
-       "id" => 339078897423613952,
-       "proxy_url" => "https://images.discordapp.net/attachments/321318083182460928/339078897423613952/cat.jpeg",
-       "size" => 1160070,
-       "url" => "https://cdn.discordapp.com/attachments/321318083182460928/339078897423613952/cat.jpeg",
-       "width" => 2067}],
-    "author" => %{"avatar" => "5dac354610b688fc5d7fe991b172f2b7",
-      "discriminator" => "7512", "id" => 308968137678651393,
-      "username" => "juba"}, "channel_id" => 321318083182460928,
-    "content" => "comment", "edited_timestamp" => nil, "embeds" => [],
-    "id" => 339078897910022145, "mention_everyone" => false,
-    "mention_roles" => [], "mentions" => [], "nonce" => nil, "pinned" => false,
-    "timestamp" => "2017-07-24T16:18:29.043000+00:00", "tts" => false,
-    "type" => 0}, event_name: :MESSAGE_CREATE, op: :dispatch, seq_num: 17}
-    """
-    author_name = payload.data["author"]["username"]
-    content  = payload.data["content"]
-    mentions = payload.data["mentions"]
-    expanded_content = Enum.reduce(mentions, content, fn(mention, msg) -> String.replace(msg, "<@" <> Integer.to_string(mention["id"]) <> ">", "@" <> mention["username"]) end)
-    "<#{author_name}> #{expanded_content}"
+  defp parse_payload_as_string(payload) do
+    payload.data["content"]
+    |> add_author_tag_to_message(payload.data)
+    |> expand_mentions_in_message(payload.data)
+    |> add_attachment_urls_to_message(payload.data)
   end
+
+  defp add_author_tag_to_message(message, payload_data) do
+    "<#{payload_data["author"]["username"]}> #{message}"
+  end
+
+  defp expand_mentions_in_message(message, payload_data) do
+    Enum.reduce(payload_data["mentions"], message, &replace_mention_id_in_message/2)
+  end
+
+  defp replace_mention_id_in_message(mention, message) do
+    String.replace(message, "<@" <> Integer.to_string(mention["id"]) <> ">", "@" <> mention["username"])
+  end
+    
+  defp add_attachment_urls_to_message(message, payload_data) do
+    Enum.reduce(payload_data["attachments"], message, &add_one_attachment_url_to_message/2)
+  end
+
+  defp add_one_attachment_url_to_message(attachment, message) do
+    case attachment["url"] do
+      "" -> message
+      url when is_binary(url) -> "#{message} [#{attachment["url"]}]"
+      _ -> message
+    end
+  end
+    
 end
