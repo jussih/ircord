@@ -9,7 +9,7 @@ defmodule Ircord.Supervisor do
     children = [
       worker(Ircord.Bridge, [:bridge]),
       supervisor(Ircord.Discord.Supervisor, []),
-      supervisor(Ircord.Irc.Supervisor, [])
+      supervisor(Ircord.IRC.Supervisor, [])
     ]
 
     supervise(children, strategy: :one_for_one)

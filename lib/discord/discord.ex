@@ -1,5 +1,4 @@
-
-defmodule Ircord.DiscordBot do
+defmodule Ircord.Discord do
   @moduledoc """
   Discord bot client callback module. Based on the EchoBot example in
   the discord_ex library.
@@ -9,7 +8,7 @@ defmodule Ircord.DiscordBot do
   # Message Handler
   def handle_event({:message_create, payload}, state) do
     if payload.data["author"]["id"] != state[:client_id] do
-      GenServer.call(:bridge, {:discord_message_received, parse_payload_as_string(payload)})
+      Ircord.Bridge.handle_discord_message(:bridge, parse_payload_as_string(payload))
     end
     {:ok, state}
   end
@@ -38,7 +37,7 @@ defmodule Ircord.DiscordBot do
   defp replace_mention_id_in_message(mention, message) do
     String.replace(message, "<@" <> Integer.to_string(mention["id"]) <> ">", "@" <> mention["username"])
   end
-    
+
   defp add_attachment_urls_to_message(message, payload_data) do
     Enum.reduce(payload_data["attachments"], message, &add_one_attachment_url_to_message/2)
   end
@@ -50,5 +49,5 @@ defmodule Ircord.DiscordBot do
       _ -> message
     end
   end
-    
+
 end

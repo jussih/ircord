@@ -11,7 +11,7 @@ defmodule Ircord.Discord.Supervisor do
     discord_token = Application.get_env(:ircord, :discord_token)
     discord_config = %{
 	    token: discord_token,
-      handler: Ircord.DiscordBot,
+      handler: Ircord.Discord,
     }
     children = [
       worker(DiscordEx.Client, [discord_config]),

@@ -14,6 +14,13 @@ defmodule Ircord.Bridge do
     GenServer.start_link(__MODULE__, :ok, [name: name])
   end
 
+  def handle_discord_message(bridge, message) do
+    GenServer.call(bridge, {:discord_message_received, message})
+  end
+
+  def handle_irc_message(bridge, message) do
+    GenServer.call(bridge, {:irc_message_received, message})
+  end
 
   ## Server Callbacks
   # the GenServer implementation in OTP calls these functions to modify
@@ -45,16 +52,6 @@ defmodule Ircord.Bridge do
     {:reply, :ok, state}
   end
 
-  def handle_call({:send_irc, msg}, _from, state) do
-    reply = send_irc_message(msg, state)
-    {:reply, reply, state}
-  end
-
-  def handle_call({:send_discord, msg}, _from, state) do
-    send_discord_message(msg, state)
-    {:reply, :ok, state}
-  end
-
   @doc """
   handle_cast() is called when the server receives an asynchronous message
   no reply is returned and the caller does not block.
@@ -64,7 +61,7 @@ defmodule Ircord.Bridge do
   end
 
   defp send_irc_message(msg, _state) do
-    GenServer.call(IrcBot, {:send_message, msg})
+    GenServer.call(IRC, {:send_message, msg})
   end
 
   defp send_discord_message(msg, state) do

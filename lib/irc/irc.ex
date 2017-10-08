@@ -1,5 +1,5 @@
 
-defmodule Ircord.IrcBot do
+defmodule Ircord.IRC do
   @moduledoc """
   Irc presence for Ircord
   Based on the example bot implementation in the exirc library.
@@ -96,7 +96,7 @@ defmodule Ircord.IrcBot do
 
   def handle_info({:received, msg, %SenderInfo{:nick => nick}, channel}, config) do
     Logger.debug("#{nick} from #{channel}: #{msg}")
-    GenServer.call(:bridge, {:irc_message_received, "<#{nick}> #{msg}"})
+    Ircord.Bridge.handle_irc_message(:bridge, "<#{nick}> #{msg}")
     {:noreply, config}
   end
 

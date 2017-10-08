@@ -1,7 +1,7 @@
-defmodule Ircord.Irc.Supervisor do
+defmodule Ircord.IRC.Supervisor do
   use Supervisor
 
-  @name Ircord.Irc.Supervisor
+  @name Ircord.IRC.Supervisor
   
   def start_link do
     Supervisor.start_link(__MODULE__, :ok, name: @name)
@@ -9,7 +9,7 @@ defmodule Ircord.Irc.Supervisor do
 
   def init(:ok) do
     children = [
-      worker(Ircord.IrcBot, [Application.get_env(:ircord, :irc_config), [name: IrcBot]]),
+      worker(Ircord.IRC, [Application.get_env(:ircord, :irc_config), [name: IRC]]),
     ]
 
     supervise(children, strategy: :one_for_one)
