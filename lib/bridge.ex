@@ -5,7 +5,6 @@ defmodule Ircord.Bridge do
 
   use GenServer  # implements the GenServer behaviour
   require Logger
-  alias DiscordEx.RestClient.Resources.Channel
 
   ## Client API
   # these functions are called from elsewhere to talk to our server
@@ -18,12 +17,12 @@ defmodule Ircord.Bridge do
     GenServer.start_link(__MODULE__, :ok, [name: name])
   end
 
-  def handle_discord_message(bridge, message) do
-    GenServer.call(bridge, {:discord_message_received, message})
+  def handle_discord_message(bridge, sender, message) do
+    GenServer.call(bridge, {:discord_message_received, sender, message})
   end
 
-  def handle_irc_message(bridge, message) do
-    GenServer.call(bridge, {:irc_message_received, message})
+  def handle_irc_message(bridge, sender, message) do
+    GenServer.call(bridge, {:irc_message_received, sender, message})
   end
 
   ## Server Callbacks
@@ -44,15 +43,15 @@ defmodule Ircord.Bridge do
   state parameter is the current server state. callback can create a new state
   when handling messages and pass that back to the server
   """
-  def handle_call({:discord_message_received, message}, _from, state) do
-    Logger.debug(fn -> "Discord message received: #{message}" end)
-    send_irc_message(message, state)
+  def handle_call({:discord_message_received, sender, message}, _from, state) do
+    Logger.debug(fn -> "Discord message received from #{sender}: #{message}" end)
+    Ircord.IRC.send_message(IRC, sender, message)
     {:reply, :ok, state}
   end
 
-  def handle_call({:irc_message_received, message}, _from, state) do
-    Logger.debug(fn -> "IRC message received: #{message}" end)
-    send_discord_message(message, state)
+  def handle_call({:irc_message_received, sender, message}, _from, state) do
+    Logger.debug(fn -> "IRC message received from #{sender}: #{message}" end)
+    Ircord.Discord.Message.send_message(DiscordRESTClient, state.discord_channel, sender, message)
     {:reply, :ok, state}
   end
 
@@ -62,15 +61,6 @@ defmodule Ircord.Bridge do
   """
   def handle_cast(_msg, state) do
     {:noreply, state}
-  end
-
-  defp send_irc_message(msg, _state) do
-    Ircord.IRC.send_message(IRC, msg)
-  end
-
-  defp send_discord_message(msg, state) do
-    # DiscordRESTClient process name is registered in the discord supervisor
-    Channel.send_message(DiscordRESTClient, state.discord_channel, %{content: msg})
   end
 
 end

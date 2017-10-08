@@ -30,14 +30,15 @@ defmodule Ircord.IRC do
 
   alias ExIrc.Client
   alias ExIrc.SenderInfo
+  alias Ircord.IRC.Messages
 
   def start_link(params, opts \\ []) when is_map(params) do
     config = Config.from_params(params)
     GenServer.start_link(__MODULE__, [config], opts)
   end
 
-  def send_message(pid, msg) do
-    GenServer.call(pid, {:send_message, msg})
+  def send_message(pid, sender, msg) do
+    GenServer.call(pid, {:send_message, sender, msg})
   end
 
 # GenServer callbacks
@@ -56,8 +57,11 @@ defmodule Ircord.IRC do
     {:ok, %Config{config | :client => client}}
   end
 
-  def handle_call({:send_message, msg}, _from, config) do
-    Client.msg(config.client, :privmsg, config.channel, msg)
+  def handle_call({:send_message, sender, msg}, _from, config) do
+    # IRC server will disconnect us if we flood too many chunked messages.
+    # There should be some backoff here.
+    Messages.from_string(sender, msg)
+    |> Enum.each(fn message -> Client.msg(config.client, :privmsg, config.channel, message) end)
     {:reply, :ok, config}
   end
 
@@ -100,7 +104,7 @@ defmodule Ircord.IRC do
 
   def handle_info({:received, msg, %SenderInfo{:nick => nick}, channel}, config) do
     Logger.debug(fn -> "#{nick} from #{channel}: #{msg}" end)
-    Ircord.Bridge.handle_irc_message(:bridge, "<#{nick}> #{msg}")
+    Ircord.Bridge.handle_irc_message(:bridge, nick, msg)
     {:noreply, config}
   end
 

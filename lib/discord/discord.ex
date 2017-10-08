@@ -8,7 +8,8 @@ defmodule Ircord.Discord do
   # Message Handler
   def handle_event({:message_create, payload}, state) do
     if payload.data["author"]["id"] != state[:client_id] do
-      Ircord.Bridge.handle_discord_message(:bridge, parse_payload_as_string(payload))
+      sender = payload.data["author"]["username"]
+      Ircord.Bridge.handle_discord_message(:bridge, sender, parse_payload_as_string(payload))
     end
     {:ok, state}
   end
@@ -21,13 +22,8 @@ defmodule Ircord.Discord do
 
   defp parse_payload_as_string(payload) do
     payload.data["content"]
-    |> add_author_tag_to_message(payload.data)
     |> expand_mentions_in_message(payload.data)
     |> add_attachment_urls_to_message(payload.data)
-  end
-
-  defp add_author_tag_to_message(message, payload_data) do
-    "<#{payload_data["author"]["username"]}> #{message}"
   end
 
   defp expand_mentions_in_message(message, payload_data) do
