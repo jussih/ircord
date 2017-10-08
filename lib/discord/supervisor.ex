@@ -1,4 +1,5 @@
 defmodule Ircord.Discord.Supervisor do
+  @moduledoc "Discord process supervisor"
   use Supervisor
 
   @name Ircord.Discord.Supervisor
@@ -10,7 +11,7 @@ defmodule Ircord.Discord.Supervisor do
   def init(:ok) do
     discord_token = Application.get_env(:ircord, :discord_token)
     discord_config = %{
-	    token: discord_token,
+      token: discord_token,
       handler: Ircord.Discord,
     }
     children = [

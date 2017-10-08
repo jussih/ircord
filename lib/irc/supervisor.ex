@@ -1,4 +1,5 @@
 defmodule Ircord.IRC.Supervisor do
+  @moduledoc "IRC process supervisor"
   use Supervisor
 
   @name Ircord.IRC.Supervisor

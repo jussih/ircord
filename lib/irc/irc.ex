@@ -46,7 +46,7 @@ defmodule Ircord.IRC do
     Client.add_handler(client, self())
 
     # Connect and logon to a server, join a channel
-    Logger.debug("Connecting to #{config.server}:#{config.port}")
+    Logger.debug(fn -> "Connecting to #{config.server}:#{config.port}" end)
     Client.connect!(client, config.server, config.port)
 
     {:ok, %Config{config | :client => client}}
@@ -58,15 +58,15 @@ defmodule Ircord.IRC do
   end
 
   def handle_info({:connected, server, port}, config) do
-    Logger.debug("Connected to #{server}:#{port}")
-    Logger.debug("Logging to #{server}:#{port} as #{config.nick}..")
+    Logger.debug(fn -> "Connected to #{server}:#{port}" end)
+    Logger.debug(fn -> "Logging to #{server}:#{port} as #{config.nick}.." end)
     Client.logon(config.client, config.pass, config.nick, config.user, config.name)
     {:noreply, config}
   end
 
   def handle_info(:logged_in, config) do
-    Logger.debug("Logged in to #{config.server}:#{config.port}")
-    Logger.debug("Joining #{config.channel}..")
+    Logger.debug(fn -> "Logged in to #{config.server}:#{config.port}" end)
+    Logger.debug(fn -> "Joining #{config.channel}.." end)
     Client.join(config.client, config.channel, config.channelpass)
     {:noreply, config}
   end
@@ -78,33 +78,33 @@ defmodule Ircord.IRC do
   end
 
   def handle_info(:disconnected, config) do
-    Logger.debug("Disconnected from #{config.server}:#{config.port}")
+    Logger.debug(fn -> "Disconnected from #{config.server}:#{config.port}" end)
     {:stop, :normal, config}
   end
 
   def handle_info({:joined, channel}, config) do
-    Logger.debug("Joined #{channel}")
+    Logger.debug(fn -> "Joined #{channel}" end)
     {:noreply, config}
   end
 
   def handle_info({:names_list, channel, names_list}, config) do
     names = String.split(names_list, " ", trim: true)
             |> Enum.map(fn name -> " #{name}\n" end)
-    Logger.info("Users logged in to #{channel}:\n#{names}")
+    Logger.info(fn -> "Users logged in to #{channel}:\n#{names}" end)
     {:noreply, config}
   end
 
   def handle_info({:received, msg, %SenderInfo{:nick => nick}, channel}, config) do
-    Logger.debug("#{nick} from #{channel}: #{msg}")
+    Logger.debug(fn -> "#{nick} from #{channel}: #{msg}" end)
     Ircord.Bridge.handle_irc_message(:bridge, "<#{nick}> #{msg}")
     {:noreply, config}
   end
 
   def handle_info({:received, msg, %SenderInfo{:nick => nick}}, config) do
-    Logger.warn("#{nick}: #{msg}")
+    Logger.warn(fn -> "#{nick}: #{msg}" end)
     reply = "Hi!"
     Client.msg(config.client, :privmsg, nick, reply)
-    Logger.info("Sent #{reply} to #{nick}")
+    Logger.info(fn -> "Sent #{reply} to #{nick}" end)
     {:noreply, config}
   end
 

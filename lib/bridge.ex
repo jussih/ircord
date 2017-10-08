@@ -1,4 +1,8 @@
 defmodule Ircord.Bridge do
+  @moduledoc """
+  Bridge between IRC and Discord. Echoes messages between networks.
+  """
+
   use GenServer  # implements the GenServer behaviour
   require Logger
   alias DiscordEx.RestClient.Resources.Channel
@@ -41,13 +45,13 @@ defmodule Ircord.Bridge do
   when handling messages and pass that back to the server
   """
   def handle_call({:discord_message_received, message}, _from, state) do
-    Logger.debug("Discord message received: #{message}")
+    Logger.debug(fn -> "Discord message received: #{message}" end)
     send_irc_message(message, state)
     {:reply, :ok, state}
   end
 
   def handle_call({:irc_message_received, message}, _from, state) do
-    Logger.debug("IRC message received: #{message}")
+    Logger.debug(fn -> "IRC message received: #{message}" end)
     send_discord_message(message, state)
     {:reply, :ok, state}
   end

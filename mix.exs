@@ -38,6 +38,7 @@ defmodule Ircord.Mixfile do
       {:discord_ex, git: "https://github.com/jussih/discord_ex.git", branch: "apiv6"},
       {:exirc,  git: "https://github.com/jussih/exirc.git", branch: "nickname-in-use"},
       {:distillery, "~> 1.0", runtime: false},
+      {:credo, "~> 0.8.7", only: [:dev, :test]},
     ]
   end
 end

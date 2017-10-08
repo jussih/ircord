@@ -1,4 +1,8 @@
 defmodule Ircord.Supervisor do
+  @moduledoc """
+  Main process supervisor for bridge and slave supervisors for
+  Discord and IRC
+  """
   use Supervisor
   
   def start_link do

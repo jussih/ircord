@@ -1,5 +1,7 @@
-%{"certifi": {:hex, :certifi, "1.0.0", "1c787a85b1855ba354f0b8920392c19aa1d06b0ee1362f9141279620a5be2039", [:rebar3], [], "hexpm"},
+%{"bunt": {:hex, :bunt, "0.2.0", "951c6e801e8b1d2cbe58ebbd3e616a869061ddadcc4863d0a2182541acae9a38", [], [], "hexpm"},
+  "certifi": {:hex, :certifi, "1.0.0", "1c787a85b1855ba354f0b8920392c19aa1d06b0ee1362f9141279620a5be2039", [:rebar3], [], "hexpm"},
   "chacha20": {:hex, :chacha20, "0.3.6", "6cef6d6cea44351c6009576ed4a78791e3df818ce511e92aa6be8ca058516edf", [:mix], [], "hexpm"},
+  "credo": {:hex, :credo, "0.8.7", "b1aad9cd3aa7acdbaea49765bfc9f1605dc4555023a037dc9ea7a70539615bc8", [], [{:bunt, "~> 0.2.0", [hex: :bunt, repo: "hexpm", optional: false]}], "hexpm"},
   "curve25519": {:hex, :curve25519, "0.1.4", "819382affdc8d6c87567cec071fedb91d94ba81581f51413809e8cb945527988", [:mix], [], "hexpm"},
   "discord_ex": {:git, "https://github.com/jussih/discord_ex.git", "d756a1e86aa98629e1e881abf491af19c0f27c7a", [branch: "apiv6"]},
   "distillery": {:hex, :distillery, "1.4.1", "546d851bf27ae8fe0727e10e4fc4e146ad836eecee138263a60431e688044ed3", [:mix], [], "hexpm"},
