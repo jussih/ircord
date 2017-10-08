@@ -3,7 +3,7 @@ defmodule Ircord.Mixfile do
 
   def project do
     [app: :ircord,
-     version: "0.2.0",
+     version: "0.3.0",
      elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
@@ -35,8 +35,8 @@ defmodule Ircord.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:discord_ex, git: "https://github.com/jussih/discord_ex.git", branch: "develop"},
-      {:exirc, "~> 1.0.1"},
+      {:discord_ex, git: "https://github.com/jussih/discord_ex.git", branch: "apiv6"},
+      {:exirc,  git: "https://github.com/jussih/exirc.git", branch: "nickname-in-use"},
       {:distillery, "~> 1.0", runtime: false},
     ]
   end

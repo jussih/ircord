@@ -71,6 +71,12 @@ defmodule Ircord.IrcBot do
     {:noreply, config}
   end
 
+  def handle_info({:login_failed, :nickname_in_use}, config) do
+    nick = Enum.map(1..8, fn x -> Enum.random('abcdefghijklmnopqrstuvwxyz') end)
+    Client.nick(config.client, to_string(nick))
+    {:noreply, config}
+  end
+
   def handle_info(:disconnected, config) do
     Logger.debug("Disconnected from #{config.server}:#{config.port}")
     {:stop, :normal, config}
