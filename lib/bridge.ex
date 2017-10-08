@@ -65,7 +65,7 @@ defmodule Ircord.Bridge do
   end
 
   defp send_irc_message(msg, _state) do
-    GenServer.call(IRC, {:send_message, msg})
+    Ircord.IRC.send_message(IRC, msg)
   end
 
   defp send_discord_message(msg, state) do

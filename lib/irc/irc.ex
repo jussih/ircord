@@ -36,6 +36,10 @@ defmodule Ircord.IRC do
     GenServer.start_link(__MODULE__, [config], opts)
   end
 
+  def send_message(pid, msg) do
+    GenServer.call(pid, {:send_message, msg})
+  end
+
 # GenServer callbacks
 
   def init([config]) do
