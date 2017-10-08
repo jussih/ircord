@@ -100,19 +100,6 @@ defmodule Ircord.IRC do
     {:noreply, config}
   end
 
-  def handle_info({:mentioned, msg, %SenderInfo{:nick => nick}, channel}, config) do
-    Logger.warn("#{nick} mentioned you in #{channel}")
-    case String.contains?(msg, "hi") do
-      true ->
-        reply = "Hi #{nick}!"
-        Client.msg(config.client, :privmsg, config.channel, reply)
-        Logger.info("Sent #{reply} to #{config.channel}")
-      false ->
-        :ok
-    end
-    {:noreply, config}
-  end
-
   def handle_info({:received, msg, %SenderInfo{:nick => nick}}, config) do
     Logger.warn("#{nick}: #{msg}")
     reply = "Hi!"
