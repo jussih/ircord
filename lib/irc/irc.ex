@@ -28,8 +28,8 @@ defmodule Ircord.IRC do
     end
   end
 
-  alias ExIrc.Client
-  alias ExIrc.SenderInfo
+  alias ExIRC.Client
+  alias ExIRC.SenderInfo
   alias Ircord.IRC.Messages
 
   def start_link(params, opts \\ []) when is_map(params) do
@@ -44,10 +44,10 @@ defmodule Ircord.IRC do
 # GenServer callbacks
 
   def init([config]) do
-    # Start the client and handler processes, the ExIrc supervisor is automatically started when your app runs
-    {:ok, client}  = ExIrc.start_link!()
+    # Start the client and handler processes, the ExIRC supervisor is automatically started when your app runs
+    {:ok, client}  = ExIRC.start_link!()
 
-    # Register this process as the event handler with ExIrc
+    # Register this process as the event handler with ExIRC
     Client.add_handler(client, self())
 
     # Connect and logon to a server, join a channel
@@ -79,7 +79,7 @@ defmodule Ircord.IRC do
     {:noreply, config}
   end
 
-  def handle_info({:login_failed, :nickname_in_use}, config) do
+  def handle_info({:login_failed, :nick_in_use}, config) do
     nick = Enum.map(1..8, fn x -> Enum.random('abcdefghijklmnopqrstuvwxyz') end)
     Client.nick(config.client, to_string(nick))
     {:noreply, config}
