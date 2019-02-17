@@ -35,8 +35,8 @@ defmodule Ircord.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:discord_ex, git: "https://github.com/jussih/discord_ex.git", branch: "apiv6"},
-      {:exirc,  git: "https://github.com/jussih/exirc.git", branch: "nickname-in-use"},
+      {:discord_ex, "~> 1.1.18"},
+      {:exirc,  "~> 1.1.0"},
       {:distillery, "~> 1.0", runtime: false},
       {:credo, "~> 0.8.7", only: [:dev, :test]},
     ]
