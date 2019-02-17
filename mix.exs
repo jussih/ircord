@@ -38,7 +38,7 @@ defmodule Ircord.Mixfile do
       {:discord_ex, "~> 1.1.18"},
       {:exirc,  "~> 1.1.0"},
       {:distillery, "~> 1.0", runtime: false},
-      {:credo, "~> 0.8.7", only: [:dev, :test]},
+      {:credo, "~> 1.0.2", only: [:dev, :test]},
     ]
   end
 end
