@@ -1,0 +1,43 @@
+FROM ubuntu:18.04
+MAINTAINER Jussi Heikkilä <jussih@gmail.com>
+ENV OTP_VERSION="21.2.6"
+ENV OTP_HASH="aa0b95031e7c01af8a7042a00974ab16ed8fec305a68d7dbaa4185e5d58ef4d5"
+ENV ELIXIR_VERSION="1.8.1"
+ENV ELIXIR_HASH="de8c636ea999392496ccd9a204ccccbc8cb7f417d948fd12692cda2bd02d9822"
+
+# Fix locales
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y locales \
+    && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
+    && dpkg-reconfigure --frontend=noninteractive locales \
+    && update-locale LANG=en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
+
+# Install Erlang
+RUN apt-get update
+RUN apt-get install -y curl
+RUN apt-get install -y build-essential gcc g++ libc6-dev m4 make libncurses5-dev openssl libssl1.0-dev autoconf git
+RUN curl -fSL -o otp-src.tar.gz "https://github.com/erlang/otp/archive/OTP-${OTP_VERSION}.tar.gz"
+RUN echo "$OTP_HASH  otp-src.tar.gz" | sha256sum -c -
+ENV ERL_TOP="/usr/local/src/erlang"
+RUN mkdir -p $ERL_TOP
+RUN tar -zxC $ERL_TOP -f otp-src.tar.gz --strip-components=1
+RUN rm otp-src.tar.gz
+RUN cd $ERL_TOP && ./otp_build autoconf && ./configure && make -j$(nproc) && make install
+
+# Install Elixir
+RUN curl -fSL -o elixir-src.tar.gz "https://github.com/elixir-lang/elixir/archive/v${ELIXIR_VERSION}.tar.gz"
+RUN echo "$ELIXIR_HASH  elixir-src.tar.gz" | sha256sum -c -
+RUN mkdir -p /usr/local/src/elixir
+RUN tar -zxC /usr/local/src/elixir/ -f elixir-src.tar.gz --strip-components=1
+RUN rm elixir-src.tar.gz
+RUN cd /usr/local/src/elixir/ && make && make install
+
+# Install Hex
+RUN mix local.hex --force
+
+# Install Rebar
+RUN mix local.rebar --force
+
+CMD ["iex"]

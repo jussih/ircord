@@ -5,7 +5,7 @@ IRC channel.
 
 ## Requirements
 
-Tested with Elixir 1.4.5 and Erlang OTP 20.
+Tested with Elixir 1.8 and Erlang OTP 21.
 
 ## Installation
 
@@ -45,4 +45,11 @@ There is a premade Dockerfile for building a release for Centos 7.3.1611
   - `mix release.init`
   - `MIX_ENV=prod mix release --env=prod`
 - The release will be built to `_build/prod/rel/ircord/releases/VERSION`
+- Deploy to your server `rsync -avz _build/prod/rel/ircord/ <username>@<hostname>:<path>/ircord`
 
+### Ubuntu
+
+There is a premade Dockerfile for building a release for Ubuntu 18.04
+
+- Build the Docker image `docker build -t ubuntu-elixir:18.04 -f Dockerfile-ubuntu .`
+- Follow the Centos instructions
