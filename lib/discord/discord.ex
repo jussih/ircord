@@ -31,7 +31,7 @@ defmodule Ircord.Discord do
   end
 
   defp replace_mention_id_in_message(mention, message) do
-    String.replace(message, "<@" <> Integer.to_string(mention["id"]) <> ">", "@" <> mention["username"])
+    String.replace(message, "<@!" <> Integer.to_string(mention["id"]) <> ">", "@" <> mention["username"])
   end
 
   defp add_attachment_urls_to_message(message, payload_data) do
